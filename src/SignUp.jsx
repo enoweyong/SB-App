@@ -87,7 +87,7 @@ export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
                 <input
                   id="name"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="John Eyong"
                   value={signUpData.name}
                   onChange={(e) =>
                     setSignUpData({ ...signUpData, name: e.target.value })
@@ -123,7 +123,7 @@ export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
                 <input
                   id="phone"
                   type="tel"
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="+1 (237) 652-264575"
                   value={signUpData.phone}
                   onChange={(e) =>
                     setSignUpData({ ...signUpData, phone: e.target.value })
