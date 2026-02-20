@@ -31,20 +31,16 @@ export default function SignIn({ onSwitchToSignUp, onSignInSuccess }) {
   };
 
   return (
-    <div className="signin-container">
-      <div className="signin-wrapper">
-        <div className="signin-box signin-mode">
-          {/* Sign In Form */}
-          <div className="form-container sign-in-container">
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2>Welcome Back</h2>
+          <p class = 'subtitle'>Sign in to continue</p>
             <form onSubmit={handleSignInSubmit}>
-              <h1>Sign In</h1>
-              <div className="divider"></div>
-
               {successMessage && (
                 <div className="success-message">{successMessage}</div>
               )}
 
-              <div className="form-group">
+              <div className="input-group">
                 <input
                   type="email"
                   placeholder="Email"
@@ -54,12 +50,13 @@ export default function SignIn({ onSwitchToSignUp, onSignInSuccess }) {
                   }
                   className={errors.email ? "input-error" : ""}
                 />
+                <label>Email Address</label>
                 {errors.email && (
                   <span className="error-text">{errors.email}</span>
                 )}
               </div>
 
-              <div className="form-group">
+              <div className="input-group">
                 <input
                   type="password"
                   placeholder="Password"
@@ -69,19 +66,18 @@ export default function SignIn({ onSwitchToSignUp, onSignInSuccess }) {
                   }
                   className={errors.password ? "input-error" : ""}
                 />
+                <label>Password</label>
                 {errors.password && (
                   <span className="error-text">{errors.password}</span>
                 )}
               </div>
-
-              <a href="#" className="forgot-password">
-                Forgot your password?
-              </a>
-
-              <button type="submit" className="btn-signin">
+              <button type="submit" className="signin-btn">
                 Sign In
               </button>
-
+              <div class='extra'>
+               <a href="#" className="forgot-password">
+                Forgot password?
+              </a>
               <p className="signup-link">
                 Don't have an account?{" "}
                 <button
@@ -92,10 +88,9 @@ export default function SignIn({ onSwitchToSignUp, onSignInSuccess }) {
                   Sign Up here
                 </button>
               </p>
+              </div>
             </form>
           </div>
         </div>
-      </div>
-    </div>
   );
 }

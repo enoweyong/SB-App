@@ -18,7 +18,7 @@ export default function Dashboard({
       <header className="dashboard-header">
         <div className="header-content">
           <div className="logo-section">
-            <h1>🏢 Smooth Business</h1>
+            <h1><img src ='./assets/sblogo.jpeg' width='50' height='auto'/> Smooth Business</h1>
             <p>Find and share business experiences</p>
           </div>
           <div className="user-section">

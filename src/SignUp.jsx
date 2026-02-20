@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./SignUp.css";
+import "./SignUp.css";
 
 export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
   const [signUpData, setSignUpData] = useState({
@@ -59,48 +60,40 @@ export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
       onSignUpSuccess(userEmail);
     }
   };
-
+  
   return (
-    <div className="signup-container">
-      <div className="signup-wrapper">
-        <div className="signup-box">
+    <div className="auth-container">
+      <div className="auth-card">
+        <h2>Create an Account On Smooth Business</h2>
+        <p className ='subtitle'>Join smooth Business and grow your business</p>
           {/* Back Button */}
           <button className="back-button" onClick={onSwitchToSignIn}>
             ← Back to Sign In
           </button>
 
           {/* Sign Up Form */}
-          <form onSubmit={handleSubmit} className="signup-form">
-            <div className="signup-header">
-              <h1>Create Your Account</h1>
-              <p>Join Smooth Business and grow your business</p>
-              <div className="divider"></div>
-            </div>
-
+          <form onSubmit={handleSubmit}>
             {successMessage && (
               <div className="success-message">{successMessage}</div>
             )}
-
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="name">Full Name</label>
+              <div className="input-group">
                 <input
                   id="name"
                   type="text"
-                  placeholder="John Eyong"
+                  placeholder="full name here"
                   value={signUpData.name}
                   onChange={(e) =>
                     setSignUpData({ ...signUpData, name: e.target.value })
                   }
                   className={errors.name ? "input-error" : ""}
                 />
+                 <label htmlFor="name">Full Name</label>
                 {errors.name && (
                   <span className="error-text">{errors.name}</span>
                 )}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="email">Email Address</label>
+              <div className="input-group">
                 <input
                   id="email"
                   type="email"
@@ -111,15 +104,12 @@ export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
                   }
                   className={errors.email ? "input-error" : ""}
                 />
+                   <label htmlFor="email">Email Address</label>
                 {errors.email && (
                   <span className="error-text">{errors.email}</span>
                 )}
               </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="phone">Phone Number</label>
+              <div className="input-group">
                 <input
                   id="phone"
                   type="tel"
@@ -130,13 +120,13 @@ export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
                   }
                   className={errors.phone ? "input-error" : ""}
                 />
+                <label htmlFor="phone">Phone Number</label>
                 {errors.phone && (
                   <span className="error-text">{errors.phone}</span>
                 )}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="businessName">Business Name</label>
+              <div className="input-group">
                 <input
                   id="businessName"
                   type="text"
@@ -150,15 +140,12 @@ export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
                   }
                   className={errors.businessName ? "input-error" : ""}
                 />
+                 <label htmlFor="businessName">Business Name</label>
                 {errors.businessName && (
                   <span className="error-text">{errors.businessName}</span>
                 )}
               </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
+              <div className="input-group">
                 <input
                   id="password"
                   type="password"
@@ -169,13 +156,13 @@ export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
                   }
                   className={errors.password ? "input-error" : ""}
                 />
+                <label htmlFor="password">Password</label>
                 {errors.password && (
                   <span className="error-text">{errors.password}</span>
                 )}
               </div>
 
-              <div className="form-group">
-                <label htmlFor="confirmPassword">Confirm Password</label>
+              <div className="input-group">
                 <input
                   id="confirmPassword"
                   type="password"
@@ -189,13 +176,12 @@ export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
                   }
                   className={errors.confirmPassword ? "input-error" : ""}
                 />
+                <label htmlFor="confirmPassword">Confirm Password</label>
                 {errors.confirmPassword && (
                   <span className="error-text">{errors.confirmPassword}</span>
                 )}
               </div>
-            </div>
-
-            <div className="form-group checkbox">
+            <div className="checkbox-group">
               <input
                 id="agreeToTerms"
                 type="checkbox"
@@ -210,7 +196,7 @@ export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
               <label htmlFor="agreeToTerms">
                 I agree to the{" "}
                 <a href="#" className="terms-link">
-                  Terms and Conditions
+                <spans> Terms and Conditions</spans>
                 </a>{" "}
                 and{" "}
                 <a href="#" className="terms-link">
@@ -222,10 +208,10 @@ export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
               )}
             </div>
 
-            <button type="submit" className="btn-signup">
+            <button type="submit" className="signup-btn">
               Create Account
             </button>
-
+          <diV className='extra'>
             <p className="signin-link">
               Already have an account?{" "}
               <button
@@ -236,9 +222,9 @@ export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
                 Sign In here
               </button>
             </p>
+            </diV>
           </form>
         </div>
       </div>
-    </div>
   );
 }

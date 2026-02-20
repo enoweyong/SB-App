@@ -5,13 +5,15 @@ import SignUp from './SignUp'
 import Dashboard from './Dashboard'
 import CreateBusiness from './CreateBusiness'
 import BrowseBusinesses from './BrowseBusinesses'
-import BusinessDetails from './BusinessDetails'
 import UserProfile from './UserProfile'
 import Reviews from './Reviews'
 import CreateReview from './CreateReview'
+import Home from './Router/Home';
+import About from './Router/About';
+import {Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
+import RootLayout from './routeLayout/RootLayout';
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('signin');
   const [userEmail, setUserEmail] = useState('');
   const [userProfilePicture, setUserProfilePicture] = useState(null);
   const [navigationParams, setNavigationParams] = useState({});
@@ -101,7 +103,6 @@ function App() {
   ]);
 
   const handleNavigate = (page, params = {}) => {
-    setCurrentPage(page);
     setNavigationParams(params);
   };
 
@@ -211,85 +212,54 @@ function App() {
     }
   };
 
+  const router = createBrowserRouter(createRoutesFromElements(
+    <Route path="/" element={<RootLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/BrowseBusinesses" element={<BrowseBusinesses
+                       onNavigate={handleNavigate}
+                       businesses={businesses}
+                       searchTerm={navigationParams.search || ''}/>} />
+                    
+          <Route path="/Reviews" element={<Reviews
+                       onNavigate={handleNavigate}
+                       businesses={businesses} />} />  
+          <Route path="/CreateReview" element={<CreateReview
+                        onNavigate={handleNavigate}
+                        businesses={businesses}
+                        onAddReview={handleAddReview} />} />
+          <Route path="/Signin" element={<SignIn 
+                      onSwitchToSignUp={() => handleNavigate('signup')}
+                      onSignInSuccess={handleSignInSuccess}/>} />
+          <Route path="/SignUp" element={<SignUp 
+                      onSwitchToSignIn={() => handleNavigate('signin')}
+                      onSignUpSuccess={handleSignUpSuccess}/>} />
+          <Route path="/Dashboard" element={<Dashboard
+                       onNavigate={handleNavigate}
+                       userEmail={userEmail}
+                       onLogout={handleLogout}
+                       businesses={businesses} />} /> 
+          <Route path="/CreateBusiness" element={<CreateBusiness
+                       onNavigate={handleNavigate}
+                       onCreateBusiness={handleCreateBusiness}/>} />   
+          <Route path="/UserProfile" element={<UserProfile
+                       onNavigate={handleNavigate}
+                       businesses={businesses}
+                       userEmail={userEmail}
+                       userProfilePicture={userProfilePicture}
+                       onUpdateProfilePicture={handleUpdateProfilePicture}
+                       onDeleteProfilePicture={handleDeleteProfilePicture}
+                       onDeleteBusiness={handleDeleteBusiness}
+                       onDeleteReview={handleDeleteReview}
+                       onEditBusiness={handleEditBusiness}
+                       onEditReview={handleEditReview}/>} />
+    </Route>
+    ))
+
   return (
     <>
-      {currentPage === 'signin' && (
-        <SignIn
-          onSwitchToSignUp={() => handleNavigate('signup')}
-          onSignInSuccess={handleSignInSuccess}
-        />
-      )}
-
-      {currentPage === 'signup' && (
-        <SignUp
-          onSwitchToSignIn={() => handleNavigate('signin')}
-          onSignUpSuccess={handleSignUpSuccess}
-        />
-      )}
-
-      {currentPage === 'dashboard' && (
-        <Dashboard
-          onNavigate={handleNavigate}
-          userEmail={userEmail}
-          onLogout={handleLogout}
-          businesses={businesses}
-        />
-      )}
-
-      {currentPage === 'create' && (
-        <CreateBusiness
-          onNavigate={handleNavigate}
-          onCreateBusiness={handleCreateBusiness}
-        />
-      )}
-
-      {currentPage === 'browse' && (
-        <BrowseBusinesses
-          onNavigate={handleNavigate}
-          businesses={businesses}
-          searchTerm={navigationParams.search || ''}
-        />
-      )}
-
-      {currentPage === 'details' && (
-        <BusinessDetails
-          onNavigate={handleNavigate}
-          businesses={businesses}
-          businessId={navigationParams.id}
-          onAddReview={handleAddReview}
-        />
-      )}
-
-      {currentPage === 'profile' && (
-        <UserProfile
-          onNavigate={handleNavigate}
-          businesses={businesses}
-          userEmail={userEmail}
-          userProfilePicture={userProfilePicture}
-          onUpdateProfilePicture={handleUpdateProfilePicture}
-          onDeleteProfilePicture={handleDeleteProfilePicture}
-          onDeleteBusiness={handleDeleteBusiness}
-          onDeleteReview={handleDeleteReview}
-          onEditBusiness={handleEditBusiness}
-          onEditReview={handleEditReview}
-        />
-      )}
-
-      {currentPage === 'reviews' && (
-        <Reviews
-          onNavigate={handleNavigate}
-          businesses={businesses}
-        />
-      )}
-
-      {currentPage === 'createreview' && (
-        <CreateReview
-          onNavigate={handleNavigate}
-          businesses={businesses}
-          onAddReview={handleAddReview}
-        />
-      )}
-    </>
+        <RouterProvider router={router} />
+  </>
   )
 }
 

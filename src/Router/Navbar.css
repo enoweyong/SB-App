@@ -1,0 +1,120 @@
+.navbar{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+    left: 0;
+}
+.navbar.scrolled{
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+    padding: 0;
+}
+.nav-container{
+    max-width: 1200px;
+    margin: auto;
+    height: 80px;
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: height 0.3s ease;
+}
+.navbar.scrolled .nav-container{
+    height: 65px;
+}
+.logo{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+.logo-icon{
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px 14px;
+    border-radius: 12px;
+    transition: 0.3s;
+}
+.logo-text{
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+    letter-spacing: 0.5px;
+}
+.nav-links{
+    display: flex;
+    gap: 35px;
+    position: relative;
+}
+.nav-links a{
+    position: relative;
+    text-decoration: none;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    transition: 0.3s ease;
+}
+.nav-links a::after{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -8px;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    transition: width 0.3s ease;
+}
+.nav-links a:hover{
+    color: #000;
+}
+.nav-links a:hover::after{
+    width: 100%;
+}
+.nav-links a.active{
+    color: #0072ff;
+}
+.auth-buttons{
+    display: flex;
+    gap: 18px;
+}
+.signin-btn{
+    padding: 18px 20px;
+    border-radius: 30px;
+    border: 1px solid #0072ff;
+    color: #0072ff;
+    font-weight: 500;
+    font-size: 14px;
+    transition: 0.3s ease;
+}
+.signin-btn:hover{
+    background: #0072ff;
+    color: #fff;
+}
+.signup-btn{
+    padding: 9px 22px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #00c6ff, #0072ff );
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+.signup-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 114, 255, 0.25);
+}
+@media (max-width: 900px){
+  nav-links{
+    display: none;
+  }
+   .logo-text{
+    display: none;
+    }
+}
