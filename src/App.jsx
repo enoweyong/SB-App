@@ -1,5 +1,5 @@
 import './App.css'
-import {Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
+import {Route, createBrowserRouter, createRoutesFromElements, RouterProvider} from 'react-router-dom';
 import RootLayout from './routeLayout/RootLayout';
 import ProtectedRoute from './ProtectedRoute';
 import Home from './Router/Home';

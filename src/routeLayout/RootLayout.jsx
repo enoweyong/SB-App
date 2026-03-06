@@ -1,11 +1,12 @@
 import React from 'react'
 import Navbar from '../Router/Navbar'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 
 const RootLayout = () => {
+  const location = useLocation();
   return (
     <div className='layout'>
-        <Navbar />
+    { location.pathname !=="/dashboard"   && <Navbar />}
         <div style={{padding: "100px 40px"}}>
         <main className='page-content'>
             <Outlet />

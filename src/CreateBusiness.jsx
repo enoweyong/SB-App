@@ -1,7 +1,10 @@
 import { useState } from "react";
 import "./CreateBusiness.css";
+import { useNavigate } from "react-router-dom";
+import {API} from "./api";
 
-export default function CreateBusiness({ onNavigate, onCreateBusiness }) {
+export default function CreateBusiness({onNavigate}) {
+    const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     category: "Retail",
@@ -34,6 +37,7 @@ export default function CreateBusiness({ onNavigate, onCreateBusiness }) {
     if (!formData.location.trim()) newErrors.location = "Location is required";
     if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
     if (!formData.email.trim()) newErrors.email = "Email is required";
+    if(!/^6\d{8}$/.test(formData.phone)) newErrors.phone =("Enter a valid Cameroon phone number (6XXXXXXXX)");
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
       newErrors.email = "Invalid email format";
     if (!formData.description.trim())
@@ -43,45 +47,39 @@ export default function CreateBusiness({ onNavigate, onCreateBusiness }) {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validateForm();
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setSuccessMessage("");
-    } else {
-      const newBusiness = {
-        id: Date.now(),
-        ...formData,
-        rating: 0,
-        reviews: [],
-        createdAt: new Date().toLocaleDateString(),
-      };
-
-      onCreateBusiness(newBusiness);
-      setErrors({});
-      setSuccessMessage("Business created successfully! Redirecting...");
-
-      setTimeout(() => {
-        setFormData({
-          name: "",
-          category: "Retail",
-          location: "",
-          phone: "",
-          email: "",
-          website: "",
-          description: "",
-        });
-        onNavigate("profile");
-      }, 2000);
+      return;
     }
-  };
+    try{
+      const res = await API.post("/businesses", formData);
+      setSuccessMessage("Business created sucessfully");
+      setFormData({
+        name: "",
+        category: "Retail",
+        location: "",
+        email: "",
+        website: "",
+        description: "",
+      })
+      setTimeout(() => {
+        onNavigate("dashboard")
+      }, 1500);
+    }
+    catch(err){
+      console.log(err)
+      setErrors({api: "fail to create business"})
+    };
 
   return (
     <div className="create-business-container">
       <header className="page-header">
-        <button className="btn-back" onClick={() => onNavigate("dashboard")}>
+        <button className="btn-back" onClick={() => navigate("/dashboard")}>
           ← Back to Dashboard
         </button>
         <h1>Create New Business</h1>
@@ -119,22 +117,7 @@ export default function CreateBusiness({ onNavigate, onCreateBusiness }) {
             <div className="form-row full-width">
               <div className="form-group full-width">
                 <label>Select Category *</label>
-                <div className="category-selector">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      type="button"
-                      className={`category-option ${
-                        formData.category === cat ? "active" : ""
-                      }`}
-                      onClick={() =>
-                        setFormData({ ...formData, category: cat })
-                      }
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
+               <select value = {formData.category} onChange = {(e) => setFormData({...formData, category:e.target.value})}>{categories.map((cat) => (<option key ={cat} value={cat}>{cat}</option>))}</select>
                 {errors.category && (
                   <span className="error-text">{errors.category}</span>
                 )}
@@ -164,12 +147,13 @@ export default function CreateBusiness({ onNavigate, onCreateBusiness }) {
                 <input
                   id="phone"
                   type="tel"
-                  placeholder="+1 (555) 123-4567"
+                  placeholder="650123456"
                   value={formData.phone}
                   onChange={(e) =>
                     setFormData({ ...formData, phone: e.target.value })
                   }
                   className={errors.phone ? "input-error" : ""}
+               
                 />
                 {errors.phone && (
                   <span className="error-text">{errors.phone}</span>
@@ -249,4 +233,5 @@ export default function CreateBusiness({ onNavigate, onCreateBusiness }) {
       </div>
     </div>
   );
+}
 }

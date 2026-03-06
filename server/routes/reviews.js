@@ -1,8 +1,20 @@
-const express = require('express');
-const router = express.Router();
+const mongoose = require("mongoose");
 
-router.get('/', (req, res) => {
-    res.json({ message: 'Reviews route working' });
+const ReviewSchema = new mongoose.Schema({
+  businessId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"Business"
+  },
+  userId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref:"User"
+  },
+  rating:Number,
+  comment:String,
+  createdAt:{
+    type:Date,
+    default:Date.now
+  }
 });
 
-module.exports = router;
+module.exports = mongoose.model("Review", ReviewSchema);
