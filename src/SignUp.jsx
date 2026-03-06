@@ -1,230 +1,171 @@
+import React from 'react'
 import { useState } from "react";
 import "./SignUp.css";
-import "./SignUp.css";
+import { Link, useNavigate } from "react-router-dom";
+  import {API}  from "./api";
 
-export default function SignUp({ onSwitchToSignIn, onSignUpSuccess }) {
-  const [signUpData, setSignUpData] = useState({
-    name: "",
+const SignUp = () => {
+   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+   fullName: "",
     email: "",
-    phone: "",
-    businessName: "",
     password: "",
     confirmPassword: "",
+     phone: "",
+    businessName: "",
     agreeToTerms: false,
   });
-  const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const validateSignUp = () => {
-    const newErrors = {};
-    if (!signUpData.name.trim()) newErrors.name = "Full name is required";
-    if (!signUpData.email.trim()) newErrors.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(signUpData.email))
-      newErrors.email = "Invalid email format";
-    if (!signUpData.phone.trim()) newErrors.phone = "Phone number is required";
-    if (!signUpData.businessName.trim())
-      newErrors.businessName = "Business name is required";
-    if (!signUpData.password) newErrors.password = "Password is required";
-    if (signUpData.password.length < 6)
-      newErrors.password = "Password must be at least 6 characters";
-    if (signUpData.password !== signUpData.confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match";
-    if (!signUpData.agreeToTerms)
-      newErrors.agreeToTerms = "You must agree to the terms and conditions";
-    return newErrors;
-  };
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
+    };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const newErrors = validateSignUp();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setSuccessMessage("");
-    } else {
-      setErrors({});
-      setSuccessMessage("Account created successfully! Opening dashboard...");
-      const userEmail = signUpData.email;
-      console.log("Sign Up Data:", signUpData);
-      
-      setSignUpData({
-        name: "",
-        email: "",
-        phone: "",
-        businessName: "",
-        password: "",
-        confirmPassword: "",
-        agreeToTerms: false,
-      });
-      
-      // Redirect to dashboard immediately
-      onSignUpSuccess(userEmail);
-    }
-  };
-  
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+         setLoading(true);
+        if(formData.password !== formData.confirmPassword){
+          setLoading(false);
+          return setError("Passwords do not match");
+        }
+        if(!formData.agreeToTerms){
+          setLoading(false);
+          return setError("You must agree to the terms and conditions");
+        }
+        try{
+          const res = await API.post("/api/auth/register", formData);
+          localStorage.setItem("token", res.data.token);
+          localStorage.setItem('user', JSON.stringify(res.data.user));
+          alert("Registration successful!");
+         navigate("/dashboard");
+            
+        }   
+        catch (err) {
+          console.log(err.response?.data);
+          setError(err.response?.data?.error || "Registration failed. Please try again.");
+        } finally {
+          setLoading(false);  
+        }
+      };
   return (
     <div className="auth-container">
       <div className="auth-card">
         <h2>Create an Account On Smooth Business</h2>
         <p className ='subtitle'>Join smooth Business and grow your business</p>
+        {error && <div className="error-message">{error}</div>}
           {/* Back Button */}
-          <button className="back-button" onClick={onSwitchToSignIn}>
+          <button className="back-button" onClick={() => navigate("/signin")}>
             ← Back to Sign In
           </button>
 
           {/* Sign Up Form */}
           <form onSubmit={handleSubmit}>
-            {successMessage && (
-              <div className="success-message">{successMessage}</div>
-            )}
               <div className="input-group">
                 <input
                   id="name"
                   type="text"
-                  placeholder="full name here"
-                  value={signUpData.name}
-                  onChange={(e) =>
-                    setSignUpData({ ...signUpData, name: e.target.value })
-                  }
-                  className={errors.name ? "input-error" : ""}
+                  name='fullName'
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  required
                 />
                  <label htmlFor="name">Full Name</label>
-                {errors.name && (
-                  <span className="error-text">{errors.name}</span>
-                )}
               </div>
 
               <div className="input-group">
                 <input
                   id="email"
                   type="email"
-                  placeholder="john@example.com"
-                  value={signUpData.email}
-                  onChange={(e) =>
-                    setSignUpData({ ...signUpData, email: e.target.value })
-                  }
-                  className={errors.email ? "input-error" : ""}
+                  value={formData.email}
+                  name="email"
+                  onChange={handleChange}
+                  required
                 />
                    <label htmlFor="email">Email Address</label>
-                {errors.email && (
-                  <span className="error-text">{errors.email}</span>
-                )}
               </div>
               <div className="input-group">
                 <input
                   id="phone"
                   type="tel"
-                  placeholder="+1 (237) 652-264575"
-                  value={signUpData.phone}
-                  onChange={(e) =>
-                    setSignUpData({ ...signUpData, phone: e.target.value })
-                  }
-                  className={errors.phone ? "input-error" : ""}
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                 required
                 />
                 <label htmlFor="phone">Phone Number</label>
-                {errors.phone && (
-                  <span className="error-text">{errors.phone}</span>
-                )}
               </div>
 
               <div className="input-group">
                 <input
                   id="businessName"
                   type="text"
-                  placeholder="Your Business"
-                  value={signUpData.businessName}
-                  onChange={(e) =>
-                    setSignUpData({
-                      ...signUpData,
-                      businessName: e.target.value,
-                    })
-                  }
-                  className={errors.businessName ? "input-error" : ""}
+                  name='businessName'
+                  value={formData.businessName}
+                  onChange={handleChange}
+                  required
                 />
                  <label htmlFor="businessName">Business Name</label>
-                {errors.businessName && (
-                  <span className="error-text">{errors.businessName}</span>
-                )}
               </div>
               <div className="input-group">
                 <input
                   id="password"
                   type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   placeholder="••••••••"
-                  value={signUpData.password}
-                  onChange={(e) =>
-                    setSignUpData({ ...signUpData, password: e.target.value })
-                  }
-                  className={errors.password ? "input-error" : ""}
                 />
                 <label htmlFor="password">Password</label>
-                {errors.password && (
-                  <span className="error-text">{errors.password}</span>
-                )}
               </div>
 
               <div className="input-group">
                 <input
                   id="confirmPassword"
                   type="password"
+                  name='confirmPassword'
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
                   placeholder="••••••••"
-                  value={signUpData.confirmPassword}
-                  onChange={(e) =>
-                    setSignUpData({
-                      ...signUpData,
-                      confirmPassword: e.target.value,
-                    })
-                  }
-                  className={errors.confirmPassword ? "input-error" : ""}
                 />
                 <label htmlFor="confirmPassword">Confirm Password</label>
-                {errors.confirmPassword && (
-                  <span className="error-text">{errors.confirmPassword}</span>
-                )}
               </div>
             <div className="checkbox-group">
               <input
                 id="agreeToTerms"
                 type="checkbox"
-                checked={signUpData.agreeToTerms}
-                onChange={(e) =>
-                  setSignUpData({
-                    ...signUpData,
-                    agreeToTerms: e.target.checked,
-                  })
-                }
+                name="agreeToTerms"
+                checked={formData.agreeToTerms}
+                onChange={handleChange}   
               />
               <label htmlFor="agreeToTerms">
                 I agree to the{" "}
-                <a href="#" className="terms-link">
-                <spans> Terms and Conditions</spans>
-                </a>{" "}
-                and{" "}
-                <a href="#" className="terms-link">
-                  Privacy Policy
-                </a>
+                <span className ="terms-link"> Terms and Conditions</span>{" "}
+                and privacy policy.
               </label>
-              {errors.agreeToTerms && (
-                <span className="error-text">{errors.agreeToTerms}</span>
-              )}
             </div>
 
-            <button type="submit" className="signup-btn">
-              Create Account
+            <button type="submit" className="signup-btn" disabled={loading}>
+              {loading ? "Creating Account..." : "Create Account" }
             </button>
-          <diV className='extra'>
+          <div className='extra'>
             <p className="signin-link">
               Already have an account?{" "}
-              <button
-                type="button"
-                onClick={onSwitchToSignIn}
+              <Link
+                to="/signin"
                 className="link-button"
               >
                 Sign In here
-              </button>
+              </Link>
             </p>
-            </diV>
+            </div>
           </form>
         </div>
       </div>
-  );
+   
+  )
 }
+
+export default SignUp

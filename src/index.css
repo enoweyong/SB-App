@@ -8,3 +8,10 @@ a{
   text-decoration: none;
   color: inherit;
 }
+.page-content{
+  margin-top: 70px;
+  padding: 30px 40px;
+}
+.layout{
+  padding-top: 70px;
+}

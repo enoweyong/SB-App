@@ -12,9 +12,10 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(-45deg, #141e30, #243b55, #1e3c72, #2a5298);
+  background:  url("./assets/istockphoto-2188818713-1024x1024.jpg");
+  padding: 30px 40px;
   background-size: 400% 400%;
-  animation: gradientBG 12s ease infinite;
+   animation: gradientBG 30s ease infinite;
   padding: 20px;
 }
 @keyframes gradientBG {

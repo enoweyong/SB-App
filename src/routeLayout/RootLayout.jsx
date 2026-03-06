@@ -4,13 +4,14 @@ import { Outlet } from 'react-router-dom'
 
 const RootLayout = () => {
   return (
-    <div>
+    <div className='layout'>
         <Navbar />
-        <div className='container'>
+        <div style={{padding: "100px 40px"}}>
+        <main className='page-content'>
             <Outlet />
+            </main>
+            </div>
         </div>
-       
-    </div>
   )
 }
 

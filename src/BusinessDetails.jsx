@@ -9,14 +9,12 @@ const sampleBusinesses =[
   { id: 3, name: "Fresh Bites", category: "Food", rating: 4.7, description: "Savor the flavors of Fresh Bites, where we serve delicious and healthy meals made from locally sourced ingredients. Perfect for a quick lunch or a cozy dinner." },
   { id: 4, name: "Smart Repairs", category: "Services", rating: 4.3, description: "Need a fix? Smart Repairs has you covered with expert repair services for electronics, appliances, and more. Fast, reliable, and affordable solutions." },
   { id: 5, name: "Digital Experts", category: "Technology", rating: 4.9, description: "Leading the way in digital innovation, Digital Experts offers cutting-edge solutions to help your business succeed online. From web development to digital marketing, we do it all." },
-]
+];
 
-export const BusinessDetails = () => {
+const BusinessDetails = () => {
   const { id } = useParams();
-  const business = sampleBusinesses.find(b => b.id === parseInt(id));
-  if (!business) {
-    return <div>Business not found</div>;
-  }
+  const business = sampleBusinesses.find((b) => b.id === Number(id));
+  
   const [reviews, setReviews] = useState([
     {name: "Eyong", comment: "Great service!"},
     {name: "Serah", comment: "Highly recommend!"},
@@ -52,3 +50,5 @@ export const BusinessDetails = () => {
     </div>
   );
 }
+
+export default BusinessDetails;

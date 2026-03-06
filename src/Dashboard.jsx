@@ -1,145 +1,63 @@
-import { useState } from "react";
-import "./Dashboard.css";
+import React from 'react';
+import "./Dashboard.css"; 
+import {FaStore, FaStar, FaChartLine, FaUser, FaPlus, FaSearch, FaSignOutAlt} from 'react-icons/fa';
+import {API} from "./api";
+import { useNavigate } from 'react-router-dom';
 
-export default function Dashboard({
-  onNavigate,
-  userEmail,
-  onLogout,
-  businesses,
-}) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchFocused, setSearchFocused] = useState(false);
-
-  const featuredBusinesses = businesses.slice(0, 3);
-
+export default function Dashboard () {
+  const user = JSON.parse(localStorage.getItem("user"));
   return (
-    <div className="dashboard-container">
-      {/* Header */}
-      <header className="dashboard-header">
-        <div className="header-content">
-          <div className="logo-section">
-            <h1><img src ='./assets/sblogo.jpeg' width='50' height='auto'/> Smooth Business</h1>
-            <p>Find and share business experiences</p>
-          </div>
-          <div className="user-section">
-            <span className="user-email">{userEmail}</span>
-            <button className="btn-logout" onClick={onLogout}>
-              Sign Out
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Search Bar */}
-      <div className="search-section">
-        <div className="search-container">
-          <input
-            type="text"
-            placeholder="🔍 Search by phone number..."
-            className={`search-input ${searchFocused ? "focused" : ""}`}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
-          />
-          <button
-            className="btn-search"
-            onClick={() => onNavigate("browse", { search: searchTerm })}
-          >
-            Search
-          </button>
-        </div>
+    <div className='dashboard'>
+      <div className ='search-section'>
+      <div className='search-box'>
+      <FaSearch className="search-icon"/>
+        <input type='text' placeholder='search by phone number...'/>
+         </div>
+        <button className='primary-btn'>Search</button>
       </div>
 
-      {/* Main Content */}
-      <div className="dashboard-main">
-        {/* Action Cards */}
-        <section className="action-cards">
-          <div className="card action-card" onClick={() => onNavigate("create")}>
-            <div className="card-icon">➕</div>
-            <h3>Create Business</h3>
-            <p>Add your business to our platform</p>
-          </div>
-
-          <div className="card action-card" onClick={() => onNavigate("browse")}>
-            <div className="card-icon">🔍</div>
-            <h3>Browse Businesses</h3>
-            <p>Discover and review businesses</p>
-          </div>
-
-          <div className="card action-card" onClick={() => onNavigate("reviews")}>
-            <div className="card-icon">⭐</div>
-            <h3>Reviews</h3>
-            <p>Read and write reviews</p>
-          </div>
-
-          <div className="card action-card" onClick={() => onNavigate("profile")}>
-            <div className="card-icon">👤</div>
-            <h3>My Profile</h3>
-            <p>View your businesses and reviews</p>
-          </div>
-        </section>
-
-        {/* Featured Businesses */}
-        <section className="featured-section">
-          <h2>Featured Businesses</h2>
-          <div className="featured-grid">
-            {featuredBusinesses.length > 0 ? (
-              featuredBusinesses.map((business) => (
-                <div
-                  key={business.id}
-                  className="featured-card"
-                  onClick={() => onNavigate("details", { id: business.id })}
-                >
-                  <div className="business-header">
-                    <h3>{business.name}</h3>
-                    <span className="category-badge">{business.category}</span>
-                  </div>
-                  <p className="business-description">{business.description}</p>
-                  <div className="business-footer">
-                    <div className="rating">
-                      <span className="stars">
-                        {"⭐".repeat(Math.floor(business.rating))}
-                      </span>
-                      <span className="rating-value">
-                        {business.rating.toFixed(1)}
-                      </span>
-                    </div>
-                    <span className="reviews-count">
-                      ({business.reviews.length} reviews)
-                    </span>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="no-businesses">No businesses yet. Be the first!</p>
-            )}
-          </div>
-        </section>
-
-        {/* Stats */}
-        <section className="stats-section">
-          <div className="stat-card">
-            <div className="stat-number">{businesses.length}</div>
-            <div className="stat-label">Total Businesses</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-number">
-              {businesses.reduce((sum, b) => sum + b.reviews.length, 0)}
-            </div>
-            <div className="stat-label">Total Reviews</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-number">
-              {(
-                businesses.reduce((sum, b) => sum + b.rating, 0) /
-                (businesses.length || 1)
-              ).toFixed(1)}
-            </div>
-            <div className="stat-label">Avg Rating</div>
-          </div>
-        </section>
+      <div className="stats-grid">
+      <div className="stat-card">
+      <div className="stat-icon blue">
+       <FaStore/>
+       </div>
+       <div>
+       <h3>12</h3>
+       <p>Total Businesses</p>
+       </div>
+       </div>
+       <div className='stat-card'>
+       <div className='stat-icon yellow'> <FaStar/>
+       </div>
+       <div>
+       <h3>87</h3>
+       <p>Total Reviews</p></div>
+       </div>
+       <div className="stat-card">
+        <div className="stat-icon purple"> <FaChartLine/></div>
+        <div>
+        <h3>4.7</h3>
+        <p>Average Rating</p>
+        </div></div>
       </div>
-    </div>
+      <div className="action-grid">
+      <div className="action-card"> <FaPlus className ="action-icon"/>
+      <h4>Create Business</h4>
+      <p>Add your business to the platform</p></div>
+      
+      <div className="action-card">
+      <FaSearch className="action-icon"/>
+      <h4>Browse Businesses</h4>
+      <p>Discover and review businesses</p></div>
+      </div>
+      <div className="action-card"><FaStar className="action-icon"/>
+      <h4>Reviews</h4>
+      <p>Read and write reviews</p></div>
+
+      <div className="action-card"> <FaUser className="action-icon"/>
+      <h4>My Profile</h4>
+      <p>View your profile and activities</p>
+      </div>
+      </div>
   );
 }

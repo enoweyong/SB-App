@@ -5,7 +5,7 @@
      align-items: center;
      justify-content: space-between;
      gap: 40px;
-     background: linear-gradient(135deg, #667eea, #764ba2);
+     background: #F7F9FC;
 }
 .hero-content {
      max-width: 600px;

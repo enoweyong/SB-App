@@ -63,9 +63,8 @@ const BrowseBusinesses = () => {
         </div>
         <div className ="rating"><FaStar color ='gold'/> {biz.rating}</div>
         <button className ='view-btn'
-           onclick = {()=>navigate(`./business/${biz.id}`)}>View Details</button>
+           onClick = {()=>navigate(`/business/${biz.id}`)}>View Details</button>
       </div>))}
-
       </div>
     </div>
   );

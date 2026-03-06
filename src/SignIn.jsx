@@ -1,92 +1,75 @@
 import { useState } from "react";
 import "./SignIn.css";
+import { useNavigate, Link } from "react-router-dom";
+import {API} from "./api";
 
-export default function SignIn({ onSwitchToSignUp, onSignInSuccess }) {
-  const [signInData, setSignInData] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState("");
 
-  const validateSignIn = () => {
-    const newErrors = {};
-    if (!signInData.email) newErrors.email = "Email is required";
-    if (!signInData.password) newErrors.password = "Password is required";
-    return newErrors;
+export default function SignIn()  {
+
+  const navigate = useNavigate();
+  const[formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value, });
   };
-
-  const handleSignInSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newErrors = validateSignIn();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setSuccessMessage("");
-    } else {
-      setErrors({});
-      setSuccessMessage("Sign In successful! Welcome back.");
-      const userEmail = signInData.email;
-      setSignInData({ email: "", password: "" });
-      setTimeout(() => {
-        onSignInSuccess(userEmail);
-      }, 1500);
+    setLoading(true);
+    setError("");
+    localStorage.setItem("token", "dummy-token")
+    navigate("/dashboard");
+    try {
+      const res = await API.post("/auth/login", formData);
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user || {}));
+      navigate("/dashboard");
     }
-  };
-
+     catch (err) {
+      setError(err.response?.data?.message || "Invalid email or password");
+    } finally {
+      setLoading(false);
+    }
+  }
   return (
     <div className="auth-container">
       <div className="auth-card">
         <h2>Welcome Back</h2>
-          <p class = 'subtitle'>Sign in to continue</p>
-            <form onSubmit={handleSignInSubmit}>
-              {successMessage && (
-                <div className="success-message">{successMessage}</div>
-              )}
+          <p className = 'subtitle'>Sign in to continue</p>
+          {error && <div className="error">{error}</div>}
+            <form onSubmit={handleSubmit}>
 
-              <div className="input-group">
+  <div className="input-group">
                 <input
                   type="email"
-                  placeholder="Email"
-                  value={signInData.email}
-                  onChange={(e) =>
-                    setSignInData({ ...signInData, email: e.target.value })
-                  }
-                  className={errors.email ? "input-error" : ""}
+                  name="email"
+                  value ={formData.email}
+                  onChange={handleChange}
+                  required
                 />
                 <label>Email Address</label>
-                {errors.email && (
-                  <span className="error-text">{errors.email}</span>
-                )}
               </div>
 
               <div className="input-group">
                 <input
                   type="password"
-                  placeholder="Password"
-                  value={signInData.password}
-                  onChange={(e) =>
-                    setSignInData({ ...signInData, password: e.target.value })
-                  }
-                  className={errors.password ? "input-error" : ""}
+                  name="password"
+                  value ={formData.password}
+                  onChange={handleChange}
+                 required
                 />
                 <label>Password</label>
-                {errors.password && (
-                  <span className="error-text">{errors.password}</span>
-                )}
               </div>
-              <button type="submit" className="signin-btn">
-                Sign In
-              </button>
-              <div class='extra'>
-               <a href="#" className="forgot-password">
-                Forgot password?
-              </a>
-              <p className="signup-link">
-                Don't have an account?{" "}
-                <button
-                  type="button"
-                  onClick={onSwitchToSignUp}
-                  className="link-button"
-                >
-                  Sign Up here
+              <button type="submit" className="signin-btn" disabled={loading}>
+                {loading ? "Signing In..." : "Sign In"}
                 </button>
+              <div className='extra'>
+              <p className="signup-link">
+                Don't have an account? <Link to ="/signup" className="link-button">Sign up</Link>
               </p>
               </div>
             </form>
