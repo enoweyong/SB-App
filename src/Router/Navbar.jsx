@@ -35,6 +35,7 @@ useEffect(() => {
             <NavLink to='/about'><li>About</li></NavLink>
             <NavLink to='/browse-businesses'><li>Browse Businesses</li></NavLink>    
             <NavLink to='/reviews'><li>Reviews</li></NavLink>
+             <NavLink to='/create-business'><li>Create Business</li></NavLink>
             </div>
         <div className ='auth-buttons'>
             <NavLink to='/signin' className ='signin'><li>Sign In</li></NavLink>

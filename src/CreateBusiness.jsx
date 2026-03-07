@@ -1,237 +1,254 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./CreateBusiness.css";
 import { useNavigate } from "react-router-dom";
-import {API} from "./api";
+import { API } from "./api";
+import { FaStore, FaUpload } from "react-icons/fa";
 
-export default function CreateBusiness({onNavigate}) {
-    const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    name: "",
-    category: "Retail",
-    location: "",
-    phone: "",
-    email: "",
-    website: "",
-    description: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [successMessage, setSuccessMessage] = useState("");
+export default function CreateBusiness() {
 
-  const categories = [
-    "Retail",
-    "Food & Beverage",
-    "Services",
-    "Healthcare",
-    "Technology",
-    "Finance",
-    "Education",
-    "Entertainment",
-    "Transportation",
-    "Other",
-  ];
+const navigate = useNavigate();
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Business name is required";
-    if (!formData.category) newErrors.category = "Please select a category";
-    if (!formData.location.trim()) newErrors.location = "Location is required";
-    if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    if(!/^6\d{8}$/.test(formData.phone)) newErrors.phone =("Enter a valid Cameroon phone number (6XXXXXXXX)");
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email))
-      newErrors.email = "Invalid email format";
-    if (!formData.description.trim())
-      newErrors.description = "Description is required";
-    if (formData.description.length < 20)
-      newErrors.description = "Description must be at least 20 characters";
-    return newErrors;
-  };
+const [formData,setFormData] = useState({
+name:"",
+category:"",
+location:"",
+phone:"",
+email:"",
+website:"",
+description:""
+});
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const newErrors = validateForm();
+const [image,setImage] = useState(null);
+const [loading,setLoading] = useState(false);
+const [error,setError] = useState("");
+const [success,setSuccess] = useState("");
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setSuccessMessage("");
-      return;
-    }
-    try{
-      const res = await API.post("/businesses", formData);
-      setSuccessMessage("Business created sucessfully");
-      setFormData({
-        name: "",
-        category: "Retail",
-        location: "",
-        email: "",
-        website: "",
-        description: "",
-      })
-      setTimeout(() => {
-        onNavigate("dashboard")
-      }, 1500);
-    }
-    catch(err){
-      console.log(err)
-      setErrors({api: "fail to create business"})
-    };
+const categories = [
+"Restaurant",
+"Retail",
+"Technology",
+"Finance",
+"Health",
+"Education",
+"Transportation",
+"Entertainment",
+"Beauty & Fashion",
+"Other"
+];
 
-  return (
-    <div className="create-business-container">
-      <header className="page-header">
-        <button className="btn-back" onClick={() => navigate("/dashboard")}>
-          ← Back to Dashboard
-        </button>
-        <h1>Create New Business</h1>
-        <p>Add your business to the Smooth Business platform</p>
-      </header>
+const handleChange = (e)=>{
+setFormData({
+...formData,
+[e.target.name]:e.target.value
+});
+};
 
-      <div className="form-wrapper">
-        <form onSubmit={handleSubmit} className="business-form">
-          {successMessage && (
-            <div className="success-message">{successMessage}</div>
-          )}
+const validateForm = ()=>{
 
-          <div className="form-section">
-            <h2>Basic Information</h2>
+if(!formData.name) return "Business name required";
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="name">Business Name *</label>
-                <input
-                  id="name"
-                  type="text"
-                  placeholder="Enter business name"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
-                  className={errors.name ? "input-error" : ""}
-                />
-                {errors.name && (
-                  <span className="error-text">{errors.name}</span>
-                )}
-              </div>
-            </div>
+if(!formData.category) return "Select a category";
 
-            <div className="form-row full-width">
-              <div className="form-group full-width">
-                <label>Select Category *</label>
-               <select value = {formData.category} onChange = {(e) => setFormData({...formData, category:e.target.value})}>{categories.map((cat) => (<option key ={cat} value={cat}>{cat}</option>))}</select>
-                {errors.category && (
-                  <span className="error-text">{errors.category}</span>
-                )}
-              </div>
-            </div>
+if(!/^(?:\+237)?6[0-9]{8}$/.test(formData.phone))
+return "Enter valid Cameroon phone (6XXXXXXXX)";
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="location">Location *</label>
-                <input
-                  id="location"
-                  type="text"
-                  placeholder="City, State"
-                  value={formData.location}
-                  onChange={(e) =>
-                    setFormData({ ...formData, location: e.target.value })
-                  }
-                  className={errors.location ? "input-error" : ""}
-                />
-                {errors.location && (
-                  <span className="error-text">{errors.location}</span>
-                )}
-              </div>
+if(!formData.location) return "Location required";
 
-              <div className="form-group">
-                <label htmlFor="phone">Phone *</label>
-                <input
-                  id="phone"
-                  type="tel"
-                  placeholder="650123456"
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
-                  className={errors.phone ? "input-error" : ""}
-               
-                />
-                {errors.phone && (
-                  <span className="error-text">{errors.phone}</span>
-                )}
-              </div>
-            </div>
+if(formData.description.length < 20)
+return "Description must be at least 20 characters";
 
-            <div className="form-row">
-              <div className="form-group">
-                <label htmlFor="email">Email *</label>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="business@example.com"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  className={errors.email ? "input-error" : ""}
-                />
-                {errors.email && (
-                  <span className="error-text">{errors.email}</span>
-                )}
-              </div>
+return null;
+};
 
-              <div className="form-group">
-                <label htmlFor="website">Website (Optional)</label>
-                <input
-                  id="website"
-                  type="url"
-                  placeholder="https://example.com"
-                  value={formData.website}
-                  onChange={(e) =>
-                    setFormData({ ...formData, website: e.target.value })
-                  }
-                />
-              </div>
-            </div>
-          </div>
+const handleSubmit = async(e)=>{
 
-          <div className="form-section">
-            <h2>Business Description</h2>
-            <div className="form-group full-width">
-              <label htmlFor="description">Description *</label>
-              <textarea
-                id="description"
-                placeholder="Describe your business, services, and what makes it special..."
-                value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
-                rows="6"
-                className={errors.description ? "input-error" : ""}
-              />
-              <small className="char-count">
-                {formData.description.length} / 500 characters
-              </small>
-              {errors.description && (
-                <span className="error-text">{errors.description}</span>
-              )}
-            </div>
-          </div>
+e.preventDefault();
 
-          <div className="form-actions">
-            <button
-              type="button"
-              className="btn-cancel"
-              onClick={() => onNavigate("dashboard")}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="btn-submit">
-              Create Business
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  );
+const validationError = validateForm();
+
+if(validationError){
+setError(validationError);
+return;
 }
+
+try{
+
+setLoading(true);
+setError("");
+
+const res = await API.post("/businesses",formData);
+
+setSuccess("Business created successfully");
+
+setTimeout(()=>{
+navigate("/dashboard");
+},1500);
+
+}catch(err){
+
+setError("Failed to create business");
+
+}
+
+setLoading(false);
+
+};
+
+return(
+
+<div className="create-business-page">
+
+<div className="create-business-card">
+
+<div className="header">
+
+<FaStore className="icon"/>
+
+<h2>Create Business</h2>
+
+<p>Add your business to the Smooth Business platform</p>
+
+</div>
+
+<form onSubmit={handleSubmit}>
+
+{error && <div className="error">{error}</div>}
+{success && <div className="success">{success}</div>}
+
+<div className="form-group">
+
+<label>Business Name</label>
+
+<input
+type="text"
+name="name"
+placeholder="Enter business name"
+value={formData.name}
+onChange={handleChange}
+/>
+
+</div>
+
+<div className="form-group">
+
+<label>Category</label>
+
+<select
+name="category"
+value={formData.category}
+onChange={handleChange}
+>
+
+<option value="">Select Category</option>
+
+{categories.map((cat)=>(
+<option key={cat} value={cat}>
+{cat}
+</option>
+))}
+
+</select>
+
+</div>
+
+<div className="form-group">
+
+<label>Location</label>
+
+<input
+type="text"
+name="location"
+placeholder="City / Area"
+value={formData.location}
+onChange={handleChange}
+/>
+
+</div>
+
+<div className="form-group">
+
+<label>Phone</label>
+
+<input
+type="tel"
+name="phone"
+placeholder="650123456"
+value={formData.phone}
+onChange={handleChange}
+/>
+
+</div>
+
+<div className="form-group">
+
+<label>Email</label>
+
+<input
+type="email"
+name="email"
+placeholder="business@email.com"
+value={formData.email}
+onChange={handleChange}
+/>
+
+</div>
+
+<div className="form-group">
+
+<label>Website</label>
+
+<input
+type="url"
+name="website"
+placeholder="https://yourwebsite.com"
+value={formData.website}
+onChange={handleChange}
+/>
+
+</div>
+
+<div className="form-group">
+
+<label>Description</label>
+
+<textarea
+name="description"
+rows="5"
+placeholder="Describe your business..."
+value={formData.description}
+onChange={handleChange}
+/>
+
+</div>
+
+<div className="form-actions">
+
+<button
+type="button"
+className="cancel"
+onClick={()=>navigate("/dashboard")}
+>
+
+Cancel
+
+</button>
+
+<button
+type="submit"
+className="submit"
+>
+
+{loading ? "Creating..." : "Create Business"}
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+);
 }

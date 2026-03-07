@@ -39,12 +39,6 @@ const BrowseBusinesses = () => {
     <div className ='browse-container'>
       <h2>Browse Businesses</h2>
       <div className = 'filter-bar'>
-        <input 
-          type ="text"
-          placeholder ='Search businesses...'
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
           <option value="All">All Categories</option>
           <option value="Technology">Technology</option>

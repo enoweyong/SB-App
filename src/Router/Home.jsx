@@ -16,7 +16,7 @@ const Home = () => {
     }
   }
   const handleLearnMore = ()=>{
-    navigate("/about");
+    navigate("/create-business");
   };
   return (
     <div className ='hero'>
@@ -41,13 +41,23 @@ const Home = () => {
             </div>
           </div>
         </section>
+        <section className='stats'>
       <div className='hero-image'>
-        <div className ='floating-card card1'><FaStar color ='gold'/> 4.9 rating</div>
-        <div className ='floating-card card2'><FaStar color ='gold'/> 500+ Business</div>
-        <div className ='floating-card card3'><FaStar color ='gold'/>Trusted Reviews</div>
+        <div className ='floating-card card1'><FaStar color ='gold'/><h2> 4.8</h2> <p>Average Rating</p></div>
+        <div className ='floating-card card2'><FaStar color ='gold'/> <h2>500+</h2><p>Businesses</p> </div>
+        <div className ='floating-card card3'><FaStar color ='gold'/><h2>1200+</h2> <p>Reviews</p></div>
       </div>
-    </div>
-  );
+      </section>
+      <section className="cta">
+        <h2>Ready to grow your business?</h2>
+        <button>Create Your Business Listeing</button>
+      </section>
+      <footer className ="footer">
+        <p></p>
+      </footer>
+
+    </div>  );
+    
 }
 
 export default Home

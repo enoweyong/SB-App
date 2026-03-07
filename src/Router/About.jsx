@@ -1,8 +1,13 @@
 import React from "react";
 import "./About.css";
 import { FaStore, FaSearch, FaStar, FaUsers } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function About() {
+  const navigate = useNavigate();
+  const handleGetStated = ()=>{
+    navigate("/dashboard");
+  };
   return (
     <div className="about-page">
 
@@ -87,7 +92,7 @@ export default function About() {
           Whether you're a business owner or a customer looking for reliable
           services, Smooth Business helps you connect.
         </p>
-        <button className="cta-btn">Get Started</button>
+        <button className="cta-btn" onClick ={ handleGetStated} >Get Started</button>
       </section>
 
     </div>
